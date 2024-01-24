@@ -55,6 +55,30 @@ const fetchAllMediaByAppId = async (
 };
 
 /**
+ * Fetch media items by a search term from the database.
+ *
+ * This function searches for media items where the title matches the provided search term.
+ * The search is performed using a SQL LIKE query, allowing for partial matches.
+ *
+ * @param {string} SearchTerm - The term used for searching in media item titles.
+ * @returns {Promise<object[]>} - A promise that resolves to an array of objects, each representing a media item that matches the search term.
+ * @throws {Error} - Throws an error if the database query fails.
+ */
+
+const fetchByMediaSeachTerm = async (SearchTerm : string) => {
+  try {
+    const [results] = await promisePool.query('SELECT title FROM MediaItems WHERE title = ?',
+    [`%${SearchTerm}%`])
+
+    return results;
+
+  } catch (error) {
+    console.error
+    throw error
+  }
+}
+
+/**
  * Get media item by id from the database
  *
  * @param {number} id - id of the media item
@@ -312,6 +336,7 @@ const fetchHighestRatedMedia = async (): Promise<MediaItem | undefined> => {
 export {
   fetchAllMedia,
   fetchAllMediaByAppId,
+  fetchByMediaSeachTerm,
   fetchMediaById,
   postMedia,
   deleteMedia,

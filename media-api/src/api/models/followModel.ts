@@ -1,7 +1,7 @@
 import { ResultSetHeader, RowDataPacket, FieldPacket } from "mysql2";
 import { TokenContent } from "@sharedTypes/DBTypes";
 import promisePool  from '../../lib/db'
-import { UserFollows } from '@sharedTypes/DBTypes';
+import { UserFollows } from '@sharedTypes/DBTypes'; // use this
 
 const addFollow = async (followerId: number, followingId: number) => {
   try {
