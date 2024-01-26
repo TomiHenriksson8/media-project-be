@@ -16,21 +16,30 @@ export default {
     }
   },
   Mutation: {
-    createMediaItem: async (_parent: undefined, args: {input: Omit<MediaItem, 'media_id' | 'created_at' | 'thumbnail'>}, context: MyContext) => {
+    createMediaItem: async (_parent: undefined, args: {input: Omit<MediaItem, 'media_id' | 'created_at' | 'thumbnail' | 'user_id'>}, context: MyContext) => {
       if (!context.user || !context.user.user_id) {
           throw new GraphQLError('Not authorized', {
               extensions: {code: 'NOT_AUTHORIZED'},
           });
       }
-      return await postMedia(args.input);
+
+      const userData = {
+          ...args.input,
+          user_id: context.user.user_id,
+      };
+
+      return await postMedia(userData);
+      },
+      addTagToMediaItem: async (_parent: undefined, args: {input: MediaItemTag }) => {
+        const { media_id, tag_id } = args.input;
+        const mI = String(media_id)
+        return await postTagToMedia(mI, tag_id)
+      },
+      updateMediaItem: async (_parent: undefined, args: {input: Pick<MediaItem, 'title' | 'description'>; media_id: string }) => {
+        return await putMedia(args.input, Number(args.media_id))
+      },
   },
-    addTagToMediaItem: async (_parent: undefined, args: {input: MediaItemTag }) => {
-      const { media_id, tag_id } = args.input;
-      const mI = String(media_id)
-      return await postTagToMedia(mI, tag_id)
-    },
-    updateMediaItem: async (_parent: undefined, args: {input: Pick<MediaItem, 'title' | 'description'>; media_id: string }) => {
-      return await putMedia(args.input, Number(args.media_id))
-    },
-  },
-}
+};
+
+
+

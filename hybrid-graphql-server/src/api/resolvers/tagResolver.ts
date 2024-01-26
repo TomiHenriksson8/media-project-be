@@ -11,6 +11,9 @@ export default {
     tags: async () => {
       return await fetchAllTags();
     },
+    /* tag : async (_parent: undefined, args: {tag_id: string}) => {
+      const tag = await
+    }, */
   },
   Mutation: {
     createTag: async (

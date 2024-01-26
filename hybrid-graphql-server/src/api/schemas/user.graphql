@@ -24,12 +24,15 @@ type LoginResponse {
 type Query {
   users: [User]
   user(user_id: ID!): User
+  checkToken: User
+  checkEmail(email: String!): Boolean
+  checkUsername(username: String!): Boolean
 }
 
 input UserInput {
-  username: String!
-  email: String!
-  password: String!
+  username: String! @constraint(minLength: 3, maxLength: 255)
+   email: String! @constraint(format: "email", maxLength: 255)
+   password: String! @constraint(minLength: 5)
 }
 
 type Mutation {

@@ -9,6 +9,7 @@ type MediaItem {
   description: String
   created_at: String
   tags: [Tag]
+  owner: User
 }
 
 type MediaResponse {
@@ -17,7 +18,6 @@ type MediaResponse {
 }
 
 input MediaItemInput {
-  user_id: ID!
   filename: String!
   filesize: Int!
   media_type: String!
@@ -44,5 +44,5 @@ type Query {
 type Mutation {
   createMediaItem(input: MediaItemInput!): MediaItem
   addTagToMediaItem(input: AddTagToMediaItemInput!): MediaItem
-  updateMediaItem(input: UpdateMediaItemInput!, media_id:ID!): MediaResponse
+  updateMediaItem(input: UpdateMediaItemInput!, media_id: ID!): MediaResponse
 }
