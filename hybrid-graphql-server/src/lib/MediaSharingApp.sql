@@ -89,7 +89,7 @@ CREATE TABLE UserFollows (
 CREATE TABLE Notifications (
     notification_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
-    notification_type ENUM('comment', 'follow', 'like') NOT NULL,
+    notification_type ENUM('COMMENT', 'FOLLOW', 'LIKE') NOT NULL,
     notification_content TEXT,
     reference_id INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -126,6 +126,14 @@ INSERT INTO Likes (media_id, user_id) VALUES
 (3, 1),
 (2, 3),
 (3, 3);
+
+INSERT INTO Notifications (user_id, notification_type, notification_content, reference_id) VALUES
+(1, 'comment', 'User 2 commented on your post', 101),
+(1, 'follow', 'User 3 started following you', 103),
+(2, 'like', 'User 1 liked your photo', 102),
+(3, 'comment', 'User 1 commented on your post', 104),
+(2, 'follow', 'User 4 started following you', 105),
+(3, 'like', 'User 2 liked your photo', 106);
 
 INSERT INTO Ratings (media_id, user_id, rating_value) VALUES
 (1, 2, 5),

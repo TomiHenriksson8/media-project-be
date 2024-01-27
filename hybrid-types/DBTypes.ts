@@ -33,6 +33,16 @@ type MediaItem = {
   app_id: string;
 };
 
+type Notification = {
+  notification_id: number;
+  user_id: number;
+  notification_type: 'COMMENT' | 'FOLLOW' | 'LIKE';
+  notification_content: string;
+  reference_id: number;
+  created_at: Date | string;
+  read_status: boolean;
+};
+
 type Comment = {
   comment_id: number;
   media_id: number;
@@ -110,6 +120,7 @@ export type {
   User,
   UserFollows,
   MediaItem,
+  Notification,
   Comment,
   Like,
   Rating,
