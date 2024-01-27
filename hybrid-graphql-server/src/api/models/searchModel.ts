@@ -62,6 +62,8 @@ const searchByUserAndMedia = async (searchTerm: string) => {
       'SELECT media_id, title FROM MediaItems WHERE title LIKE ?',
       [`%${searchTerm}%`]
     );
+    console.log("MediaItems: ", mediaItems);
+
 
     return { users, mediaItems };
   } catch (error) {

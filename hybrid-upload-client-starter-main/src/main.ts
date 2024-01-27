@@ -7,11 +7,16 @@ const loginForm = document.querySelector('#login-form');
 const fileForm = document.querySelector('#file-form');
 
 // select inputs from the DOM
-const usernameInput = document.querySelector('#username') as HTMLInputElement | null;
-const passwordInput = document.querySelector('#password') as HTMLInputElement | null;
-
+const usernameInput = document.querySelector(
+  '#username'
+) as HTMLInputElement | null;
+const passwordInput = document.querySelector(
+  '#password'
+) as HTMLInputElement | null;
 const titleInput = document.querySelector('#title') as HTMLInputElement | null;
-const descriptionInput = document.querySelector('#description') as HTMLTextAreaElement | null;
+const descriptionInput = document.querySelector(
+  '#description'
+) as HTMLTextAreaElement | null;
 const fileInput = document.querySelector('#file') as HTMLInputElement | null;
 
 // select profile elements from the DOM
@@ -21,7 +26,7 @@ const emailTarget = document.querySelector('#email-target');
 // select media elements from the DOM
 const filesList = document.querySelector('#files-list');
 
-// TODO: function to login
+// function to login
 const login = async (): Promise<LoginResponse> => {
   // grapql query to login (copy from sandbox)
   const query = `
@@ -52,15 +57,14 @@ const login = async (): Promise<LoginResponse> => {
       'Content-Type': 'application/json',
     },
   };
-  const loginResponse = await fetchData<UploadResponse>(
-    import.meta.env.VITE_UPLOAD_SERVER,
+  const loginResponse = await fetchData<{data: {login: LoginResponse}}>(
+    import.meta.env.VITE_GRAPHQL_SERVER,
     options
   );
   return loginResponse.data.login;
 };
 
 // TODO: function to upload a file
-
 const uploadFile = async (): Promise<UploadResponse> => {
   const formData = new FormData();
   if (fileInput && fileInput.files) {
@@ -71,34 +75,34 @@ const uploadFile = async (): Promise<UploadResponse> => {
     body: formData,
     headers: {
       Authorization: 'Bearer ' + localStorage.getItem('token'),
-    }
+    },
   };
-  const uploadResponse = await fetchData<{data: {upload: UploadResponse}}>(
-    import.meta.env.VITE_GRAPHQL_SERVER + '/uploads',
+  const uploadResponse = await fetchData<UploadResponse>(
+    import.meta.env.VITE_UPLOAD_SERVER + '/upload',
     options
   );
   console.log(uploadResponse);
-  return uploadResponse.data.upload;
+  return uploadResponse;
 };
 
 // TODO funtion to post a file to the API
-
 const postFile = async (uploadResponse: UploadResponse) => {
   const query = `
-  mutation Mutation($input: MediaItemInput!) {
+  mutation CreateMediaItem($input: MediaItemInput!) {
     createMediaItem(input: $input) {
       title
     }
   }
   `;
+
   const variables = {
     input: {
+      title: titleInput && titleInput.value,
       description: descriptionInput && descriptionInput.value,
       filename: uploadResponse.data.filename,
-      filesize: uploadResponse.data.filesize,
       media_type: uploadResponse.data.media_type,
-      title: titleInput && titleInput.value
-    }
+      filesize: uploadResponse.data.filesize,
+    },
   };
 
   const options = {
@@ -110,10 +114,10 @@ const postFile = async (uploadResponse: UploadResponse) => {
     },
   };
 
-  const postResponse = await fetchData<{data: {createMediaItem: Pick<MediaItem, 'title'>}}>(
-    import.meta.env.VITE_GRAPHQL_SERVER,
-    options
-  );
+  const postResponse = await fetchData<{
+    data: {createMediaItem: Pick<MediaItem, 'title'>};
+  }>(import.meta.env.VITE_GRAPHQL_SERVER, options);
+
   console.log(postResponse);
   return postResponse;
 };
@@ -183,6 +187,7 @@ const addFilesToDom = async () => {
 
 addFilesToDom();
 
+// function to get userdata from API using token
 const getUserData = async (token: string): Promise<UserWithNoPassword> => {
   const query = `
       query CheckToken {
@@ -249,7 +254,6 @@ if (loginForm) {
 // event listener should call uploadFile function to upload the file
 // then call postFile function to post the file to the GraphQL API
 // then call addFileToDom to update the DOM with the file data
-
 if (fileForm) {
   fileForm.addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -262,5 +266,4 @@ if (fileForm) {
       alert((error as Error).message);
     }
   });
-
 }

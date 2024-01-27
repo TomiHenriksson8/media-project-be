@@ -1,6 +1,7 @@
 import { User, UserWithNoPassword } from "@sharedTypes/DBTypes"
 import { fetchData } from "../../lib/functions";
-import { UserResponse } from "@sharedTypes/MessageTypes";
+import { UserDeleteResponse, UserResponse } from "@sharedTypes/MessageTypes";
+import { MyContext } from "../../local-types";
 
 export default {
   MediaItem: {
@@ -36,6 +37,7 @@ export default {
       const checkU = await fetchData(process.env.AUTH_SERVER + `/users/username/${args.username}`);
       return checkU;
     },
+  },
   Mutation: {
     createUser: async (
       _parent: undefined,
@@ -63,6 +65,61 @@ export default {
           );
       return user;
   },
+  updateUser: async (_parent: undefined, args: {input: Pick<User, 'username' | 'email' | 'password' >}, context: MyContext) => {
+    if (!context.user) {
+      return;
+    }
+    const token = context.user.token
+    if (!token) {
+      throw new Error('No token provided');
+    }
+    const options = {
+      method: 'PUT',
+      headers: {
+         'Authorization': 'Bearer ' + token,
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(args.input),
+    };
+    const user = await fetchData(
+      process.env.AUTH_SERVER + '/users', options
+    );
+    const uUser = await fetchData<UserWithNoPassword>(process.env.AUTH_SERVER + '/users/' + context.user.user_id);
+    return uUser;
   },
-}
+  deleteUser: async (_parent: undefined, _args: {}, context: MyContext) => {
+    if (!context.user || !context.user.token) {
+      throw new Error('Authentication required');
+    }
+
+    const token = context.user.token;
+    const userId = context.user.user_id;
+
+    const uUser: User = await fetchData(process.env.AUTH_SERVER + '/users/' + userId);
+    if (!uUser) {
+      throw new Error('User not found');
+    }
+    const deleteOptions = {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+
+    try {
+      await fetchData(`${process.env.AUTH_SERVER}/users`, deleteOptions);
+
+      return {
+        success: true,
+        message: "User deleted",
+        user: { id: uUser.user_id }, 
+      };
+    } catch (error) {
+      console.error(error);
+      throw new Error('Failed to delete user');
+    }
+  },
+
+  },
 }

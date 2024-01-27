@@ -1,0 +1,18 @@
+type SearchUser {
+  user_id: ID!
+  username: String!
+}
+
+type SearchMediaItem {
+  media_id: ID!
+  title: String!
+}
+
+type SearchResult {
+  users: [SearchUser]
+  mediaItems: [SearchMediaItem]
+}
+
+type Query {
+  search(term: String!): SearchResult
+}

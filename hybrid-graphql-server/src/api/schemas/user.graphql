@@ -21,6 +21,11 @@ type LoginResponse {
   created_at: String
 }
 
+type UserDeleteResponse {
+  message: String!
+  user: User
+}
+
 type Query {
   users: [User]
   user(user_id: ID!): User
@@ -31,11 +36,13 @@ type Query {
 
 input UserInput {
   username: String! @constraint(minLength: 3, maxLength: 255)
-   email: String! @constraint(format: "email", maxLength: 255)
-   password: String! @constraint(minLength: 5)
+  email: String! @constraint(format: "email", maxLength: 255)
+  password: String! @constraint(minLength: 5)
 }
 
 type Mutation {
   createUser(input: UserInput!): UserResponse
   login(username: String!, password: String!): LoginResponse
+  updateUser(input: UserInput!): User
+  deleteUser: UserDeleteResponse
 }
