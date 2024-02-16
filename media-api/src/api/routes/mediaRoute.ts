@@ -16,4 +16,6 @@ router.route('/:id').get(mediaGet).delete(authenticate, mediaDelete);
 
 router.route('/app/:id').get(mediaListGetByAppId);
 
+router.route('/')
+
 export default router;
