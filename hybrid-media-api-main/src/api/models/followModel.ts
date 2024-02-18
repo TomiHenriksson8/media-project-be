@@ -1,7 +1,5 @@
 import { ResultSetHeader, RowDataPacket, FieldPacket } from "mysql2";
-import { TokenContent } from "@sharedTypes/DBTypes";
 import promisePool  from '../../lib/db'
-import { UserFollows } from '@sharedTypes/DBTypes'; // use this
 
 const addFollow = async (followerId: number, followingId: number) => {
   try {
@@ -13,7 +11,6 @@ const addFollow = async (followerId: number, followingId: number) => {
   } catch (error) {
     console.error(error);
     throw error
-    return false;
   }
 }
 
@@ -36,46 +33,30 @@ const deleteFollow = async (followerId: number, followingId: number) => {
 
 
 
-const followersList = async (userId: number) => {
+const followersList =  async (userId: number) => {
   try {
-    const [rows] = await promisePool.query<RowDataPacket[]>(
-      `SELECT Users.user_id, Users.username
-       FROM UserFollows
-       JOIN Users ON UserFollows.follower_id = Users.user_id
-       WHERE UserFollows.following_id = ?`,
+    const [rows] = await promisePool.query(
+      'SELECT follower_id, followed_at FROM UserFollows WHERE following_id = ?',
       [userId]
-    );
-
-    const mappedRows = rows.map(row => ({
-      userId: row.user_id.toString(),
-      username: row.username,
-    }));
-    return mappedRows;
+    )
+    return rows;
   } catch (error) {
-    console.error(error);
-    throw error;
+    console.error(error)
+    throw error
   }
 };
 
 
-
 const followingList = async (userId: number) => {
   try {
-    const [rows] = await promisePool.query<RowDataPacket[]>(
-      `SELECT Users.user_id, Users.username
-       FROM UserFollows
-       JOIN Users ON UserFollows.following_id = Users.user_id
-       WHERE UserFollows.follower_id = ?`,
+    const [rows] = await promisePool.query(
+      'SELECT following_id FROM UserFollows WHERE follower_id = ?',
       [userId]
-    );
-    const mappedRows = rows.map(row => ({
-      userId: row.user_id.toString(),
-      username: row.username,
-    }));
-    return mappedRows;
+    )
+    return rows;
   } catch (error) {
-    console.error(error);
-    throw error;
+    console.error(error)
+    throw error
   }
 };
 
