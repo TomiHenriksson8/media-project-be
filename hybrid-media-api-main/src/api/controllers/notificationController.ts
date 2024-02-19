@@ -90,3 +90,5 @@ const getUnreadNotifications = async (req: Request, res: Response, next: NextFun
     throw e;
   }
 }
+
+export { createCommentNotification, createFollowNotification, createLikeNotification, getNotificationById, markNotificationAsRead, removeNotification, getUnreadNotifications };

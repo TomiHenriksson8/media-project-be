@@ -2,25 +2,27 @@ import { ResultSetHeader, RowDataPacket, FieldPacket } from "mysql2";
 import promisePool  from '../../lib/db'
 
 
-const createComNotification = async (userId: number, notiContent: string, refId: number ) => {
+const createComNotification = async (userId: number, notiContent: string, refId: number) => {
   try {
-    await promisePool.query(`
-    INSERT INTO Notifications (user_id, notification_type, notification_content, reference_id, read_status)
-    VALUES (?, MESSAGE, ?, ?, FALSE)`),
-    [userId, notiContent, refId];
+    await promisePool.query(
+      `INSERT INTO Notifications (user_id, notification_type, notification_content, reference_id, read_status)
+      VALUES (?, 'COMMENT', ?, ?, FALSE)`,
+      [userId, notiContent, refId]
+    );
   } catch (e) {
     console.error(e);
     throw e;
   }
-
 };
+
 
 const createLiNotification = async (userId: number, notiContent: string, refId: number) => {
   try {
-    await promisePool.query(`
-    INSERT INTO Notifications (user_id, notification_type, notification_content, reference_id, read_status)
-    VALUES (?, LIKE, ?, ?, FALSE)`),
-    [userId, notiContent, refId];
+    await promisePool.query(
+    `INSERT INTO Notifications (user_id, notification_type, notification_content, reference_id, read_status)
+    VALUES (?, 'LIKE', ?, ?, FALSE)`,
+    [userId, notiContent, refId]
+    );
   } catch (e) {
     console.error(e);
     throw e;
@@ -29,10 +31,11 @@ const createLiNotification = async (userId: number, notiContent: string, refId: 
 
 const createFolNotification = async (userId: number, notiContent: string, refId: number) => {
   try {
-    await promisePool.query(`
-    INSERT INTO Notifications (user_id, notification_type, notification_content, reference_id, read_status)
-    VALUES (?, FOLLOW, ?, ?, FALSE)`),
-    [userId, notiContent, refId];
+    await promisePool.query(
+    `INSERT INTO Notifications (user_id, notification_type, notification_content, reference_id, read_status)
+    VALUES (?, 'FOLLOW', ?, ?, FALSE)`,
+    [userId, notiContent, refId]
+    );
   } catch (e) {
     console.error(e);
     throw e;
@@ -95,7 +98,7 @@ const getUnreadNotificationsCount = async (userId: number) => {
     }
   } catch (e) {
     console.error('Error fetching unread notifications count:', e);
-    throw e; 
+    throw e;
   }
 };
 
