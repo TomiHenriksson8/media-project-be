@@ -8,6 +8,7 @@ import {
   fetchMostCommentedMedia,
   fetchHighestRatedMedia,
   putMedia,
+  fetchMediaByUserId,
 } from '../models/mediaModel';
 import CustomError from '../../classes/CustomError';
 import {MediaResponse, MessageResponse} from '@sharedTypes/MessageTypes';
@@ -39,6 +40,20 @@ const mediaGet = async (
   try {
     const id = Number(req.params.id);
     const media = await fetchMediaById(id);
+    if (media) {
+      res.json(media);
+      return;
+    }
+    const error = new CustomError('No media found', 404);
+    next(error);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const mediaGetByUserId = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const media = await fetchMediaByUserId(Number(req.params.userId));
     if (media) {
       res.json(media);
       return;
@@ -176,6 +191,7 @@ const mediaListHighestRatedGet = async (
 export {
   mediaListGet,
   mediaGet,
+  mediaGetByUserId,
   mediaPost,
   mediaPut,
   mediaDelete,

@@ -11,7 +11,7 @@ const createCommentNotification = async (req: Request, res: Response, next: Next
       throw new CustomError('Invalid request body', 400);
     }
     await createComNotification(userId, notiContent, refId);
-    res.status(201).send('Notification created');
+    res.status(201).json({message: 'Notification created'});
   } catch (e) {
     console.error(e);
     next(e);
@@ -40,7 +40,8 @@ const createLikeNotification = async (req: Request, res: Response, next: NextFun
       throw new CustomError('Invalid request body', 400);
     }
     await createLiNotification(userId, notiContent, refId);
-    res.status(201).send('Notification created');
+    res.status(201);
+    res.json({message: 'Like notification created successfully'});
   } catch (e) {
     console.error(e);
     next(e);
@@ -50,8 +51,8 @@ const createLikeNotification = async (req: Request, res: Response, next: NextFun
 const getNotificationById = async (req: Request, res: Response, next: NextFunction) => {
   const { userId } = req.params;
   try {
-    await fetchNotificationsById(Number(userId));
-    res.status(200).send('Notification fetched');
+    const notifications = await fetchNotificationsById(Number(userId));
+    res.status(200).json(notifications);
   } catch (e) {
     console.error(e);
     throw e;
@@ -62,7 +63,7 @@ const markNotificationAsRead = async (req: Request, res: Response, next: NextFun
   const { notiId } = req.params;
   try {
     await markNotiAsRead(Number(notiId));
-    res.status(200).send('Notification marked as read');
+    res.status(200).json({message: 'Notification marked as read'});
   } catch (e) {
     console.error(e);
     throw e;
@@ -73,7 +74,7 @@ const removeNotification = async (req: Request, res: Response, next: NextFunctio
   const { notiId } = req.params;
   try {
     await deleteNotification(Number(notiId));
-    res.status(200).send('Notification removed');
+    res.status(200).json({message: 'Notification removed'});
   } catch (e) {
     console.error(e);
     throw e;
