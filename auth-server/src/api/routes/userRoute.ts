@@ -3,6 +3,7 @@ import {
   checkEmailExists,
   checkToken,
   checkUsernameExists,
+  getUserWhitUsername,
   userDelete,
   userDeleteAsAdmin,
   userGet,
@@ -13,6 +14,7 @@ import {
 } from '../controllers/userController';
 import {authenticate} from '../../middlewares';
 import {body, param} from 'express-validator';
+import { getUserByUsername } from '../models/userModel';
 
 const router = express.Router();
 
@@ -351,5 +353,7 @@ router.get(
   param('username').isString().escape(),
   checkUsernameExists
 );
+
+router.get('/userget/:username', param('username').isString().escape(), getUserWhitUsername);
 
 export default router;

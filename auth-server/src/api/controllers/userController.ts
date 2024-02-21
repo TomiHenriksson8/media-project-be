@@ -315,6 +315,19 @@ const checkUsernameExists = async (
   }
 };
 
+const getUserWhitUsername = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const user = await getUserByUsername(req.params.username);
+    if (user === null) {
+      next(new CustomError('User not found', 404));
+      return;
+    }
+    res.json(user);
+  } catch (e) {
+    next(new CustomError((e as Error).message, 500));
+  }
+};
+
 export {
   userListGet,
   userGet,
@@ -326,4 +339,5 @@ export {
   checkToken,
   checkEmailExists,
   checkUsernameExists,
+  getUserWhitUsername,
 };

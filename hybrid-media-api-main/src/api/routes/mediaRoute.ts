@@ -9,6 +9,7 @@ import {
   mediaListMostCommentedGet,
   mediaListHighestRatedGet,
   mediaGetByUserId,
+  mediaGetByTitle,
 } from '../controllers/mediaController';
 import {authenticate, validationErrors} from '../../middlewares';
 import {body} from 'express-validator';
@@ -30,6 +31,8 @@ router
   );
 
 router.route('/user/:userId').get(mediaGetByUserId);
+
+router.route('/title/:title').get(mediaGetByTitle);
 
 router.route('/mostliked').get(mediaListMostLikedGet);
 

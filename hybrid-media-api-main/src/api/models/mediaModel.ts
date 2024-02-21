@@ -67,6 +67,30 @@ const fetchMediaByUserId = async (userId: number): Promise<MediaItem[]> => {
 };
 
 
+const fetchMediaByTitle = async (title: string): Promise<MediaItem | null> => {
+  const uploadPath = process.env.UPLOAD_URL;
+
+  try {
+    console.log('Upload path:', uploadPath);
+    const sql = `SELECT *,
+    CONCAT(?, filename) AS filename,
+    CONCAT(?, CONCAT(filename, "-thumb.png")) AS thumbnail
+    FROM MediaItems
+    WHERE title=?`;
+    const params = [uploadPath, uploadPath, title];
+
+    // Assuming promisePool.execute returns [rows, fields]
+    const [rows] = await promisePool.execute<RowDataPacket[] & MediaItem[]>(sql, params);
+
+    // Since you're expecting a single item, return the first item or null
+    return rows.length ? rows[0] : null;
+  } catch (e) {
+    console.log('fetchMediaByTitle error', (e as Error).message);
+    return null;
+  }
+};
+
+
 const postMedia = async (
   media: Omit<MediaItem, 'media_id' | 'created_at' | 'thumbnail'>
 ): Promise<MediaItem | null> => {
@@ -289,6 +313,7 @@ export {
   fetchAllMedia,
   fetchMediaById,
   fetchMediaByUserId,
+  fetchMediaByTitle,
   postMedia,
   deleteMedia,
   fetchMostLikedMedia,

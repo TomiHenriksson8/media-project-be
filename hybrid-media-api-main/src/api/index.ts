@@ -7,6 +7,7 @@ import commentRoute from './routes/commentRoute';
 import ratingRoute from './routes/ratingRoute';
 import followRoute from './routes/followRoute';
 import notificationRoute from './routes/notificationRoute';
+import searchRoute from './routes/searchRoute';
 
 const router = express.Router();
 
@@ -19,6 +20,7 @@ router.get('/', (req: Request, res: Response) => {
 router.use('/media', mediaRoute);
 router.use('/follow', followRoute);
 router.use('/notification', notificationRoute)
+router.use('/search', searchRoute);
 router.use('/tags', tagRoute);
 router.use('/likes', likeRoute);
 router.use('/comments', commentRoute);

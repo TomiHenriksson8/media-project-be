@@ -9,6 +9,7 @@ import {
   fetchHighestRatedMedia,
   putMedia,
   fetchMediaByUserId,
+  fetchMediaByTitle,
 } from '../models/mediaModel';
 import CustomError from '../../classes/CustomError';
 import {MediaResponse, MessageResponse} from '@sharedTypes/MessageTypes';
@@ -62,6 +63,21 @@ const mediaGetByUserId = async (req: Request, res: Response, next: NextFunction)
     next(error);
   } catch (error) {
     next(error);
+  }
+};
+
+const mediaGetByTitle = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const media = await fetchMediaByTitle(req.params.title);
+    if (media) {
+      res.json(media);
+      return;
+    }
+    const error = new CustomError('No media found', 404);
+    next(error);
+  } catch (error) {
+    const errors = new CustomError('Media not created', 500);
+    next(errors);
   }
 };
 
@@ -192,6 +208,7 @@ export {
   mediaListGet,
   mediaGet,
   mediaGetByUserId,
+  mediaGetByTitle,
   mediaPost,
   mediaPut,
   mediaDelete,
