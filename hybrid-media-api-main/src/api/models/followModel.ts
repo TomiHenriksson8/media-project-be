@@ -60,5 +60,47 @@ const followingList = async (userId: number) => {
   }
 };
 
+const followersCountList = async (userId: number): Promise<number> => {
+  try {
+    const [rows] = await promisePool.query<RowDataPacket[]>(
+      'SELECT COUNT(follower_id) AS count FROM UserFollows WHERE following_id = ?',
+      [userId]
+    );
+    return rows[0].count;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
 
-export { addFollow, deleteFollow, followersList, followingList }
+const followingCountList = async (userId: number): Promise<number> => {
+  try {
+    const [rows] = await promisePool.query<RowDataPacket[]>(
+      'SELECT COUNT(following_id) AS count FROM UserFollows WHERE follower_id = ?',
+      [userId]
+    );
+    return rows[0].count;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+const checkFollow = async (followerId: number, followingId: number) => {
+  try {
+    const [rows] = await promisePool.query<RowDataPacket[]>(
+      'SELECT * FROM UserFollows WHERE follower_id = ? AND following_id = ?',
+      [followerId, followingId]
+    );
+    if (rows.length === 0) {
+      return false;
+    }
+    return true;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+
+export { addFollow, deleteFollow, followersList, followingList, followersCountList, followingCountList, checkFollow}
