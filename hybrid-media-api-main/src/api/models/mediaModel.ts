@@ -11,7 +11,8 @@ const fetchAllMedia = async (): Promise<MediaItem[] | null> => {
       `SELECT *,
       CONCAT(?, filename) AS filename,
       CONCAT(?, CONCAT(filename, "-thumb.png")) AS thumbnail
-      FROM MediaItems`,
+      FROM MediaItems
+      ORDER BY created_at DESC`,
       [uploadPath, uploadPath]
     );
     if (rows.length === 0) {
@@ -87,6 +88,29 @@ const fetchMediaByTitle = async (title: string): Promise<MediaItem | null> => {
   } catch (e) {
     console.log('fetchMediaByTitle error', (e as Error).message);
     return null;
+  }
+};
+
+const fetchMediaFromFollowedUsers = async (userId: number): Promise<MediaItem[] | null> => {
+  const uploadPath = process.env.UPLOAD_URL;
+  try {
+    const [rows] = await promisePool.execute<RowDataPacket[] & MediaItem[]>(
+      `SELECT MediaItems.*,
+        CONCAT(?, MediaItems.filename) AS filename,
+        CONCAT(?, CONCAT(MediaItems.filename, "-thumb.png")) AS thumbnail
+      FROM MediaItems
+      JOIN userfollows ON MediaItems.user_id = userfollows.following_id
+      WHERE userfollows.follower_id = ?
+      ORDER BY MediaItems.created_at DESC`,
+      [uploadPath, uploadPath, userId]
+    );
+    if (rows.length === 0) {
+      return null;
+    }
+    return rows;
+  } catch (e) {
+    console.error('fetchMediaFromFollowedUsers error', (e as Error).message);
+    throw new Error((e as Error).message);
   }
 };
 
@@ -314,6 +338,7 @@ export {
   fetchMediaById,
   fetchMediaByUserId,
   fetchMediaByTitle,
+  fetchMediaFromFollowedUsers,
   postMedia,
   deleteMedia,
   fetchMostLikedMedia,

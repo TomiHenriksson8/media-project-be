@@ -10,6 +10,7 @@ import {
   putMedia,
   fetchMediaByUserId,
   fetchMediaByTitle,
+  fetchMediaFromFollowedUsers,
 } from '../models/mediaModel';
 import CustomError from '../../classes/CustomError';
 import {MediaResponse, MessageResponse} from '@sharedTypes/MessageTypes';
@@ -78,6 +79,20 @@ const mediaGetByTitle = async (req: Request, res: Response, next: NextFunction) 
   } catch (error) {
     const errors = new CustomError('Media not created', 500);
     next(errors);
+  }
+};
+
+const mediaGetByFollowedUsers = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const media = await fetchMediaFromFollowedUsers(Number(req.params.userId));
+    if (media) {
+      res.json(media);
+      return;
+    }
+    const error = new CustomError('No media found', 404);
+    next(error);
+  } catch (error) {
+    next(error);
   }
 };
 
@@ -209,6 +224,7 @@ export {
   mediaGet,
   mediaGetByUserId,
   mediaGetByTitle,
+  mediaGetByFollowedUsers,
   mediaPost,
   mediaPut,
   mediaDelete,

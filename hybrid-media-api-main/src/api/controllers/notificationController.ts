@@ -1,12 +1,23 @@
-import { Request, Response, NextFunction } from "express";
+import {Request, Response, NextFunction} from 'express';
 import CustomError from '../../classes/CustomError';
-import promisePool from "../../lib/db";
-import { createComNotification, createFolNotification, createLiNotification, deleteNotification, fetchNotificationsById, markNotiAsRead } from "../models/notificationModel";
+import promisePool from '../../lib/db';
+import {
+  createComNotification,
+  createFolNotification,
+  createLiNotification,
+  deleteNotification,
+  fetchNotificationsById,
+  getUnreadNotificationsCount,
+  markNotiAsRead,
+} from '../models/notificationModel';
 
-
-const createCommentNotification = async (req: Request, res: Response, next: NextFunction) => {
+const createCommentNotification = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const { userId, notiContent, refId } = req.body;
+    const {userId, notiContent, refId} = req.body;
     if (!userId || !notiContent || !refId) {
       throw new CustomError('Invalid request body', 400);
     }
@@ -16,11 +27,15 @@ const createCommentNotification = async (req: Request, res: Response, next: Next
     console.error(e);
     next(e);
   }
-}
+};
 
-const createFollowNotification = async (req: Request, res: Response, next: NextFunction) => {
+const createFollowNotification = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const { userId, notiContent, refId } = req.body;
+    const {userId, notiContent, refId} = req.body;
     if (!userId || !notiContent || !refId) {
       throw new CustomError('Invalid request body', 400);
     }
@@ -30,12 +45,15 @@ const createFollowNotification = async (req: Request, res: Response, next: NextF
     console.error(e);
     next(e);
   }
-}
+};
 
-
-const createLikeNotification = async (req: Request, res: Response, next: NextFunction) => {
+const createLikeNotification = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const { userId, notiContent, refId } = req.body;
+    const {userId, notiContent, refId} = req.body;
     if (!userId || !notiContent || !refId) {
       throw new CustomError('Invalid request body', 400);
     }
@@ -46,10 +64,14 @@ const createLikeNotification = async (req: Request, res: Response, next: NextFun
     console.error(e);
     next(e);
   }
-}
+};
 
-const getNotificationById = async (req: Request, res: Response, next: NextFunction) => {
-  const { userId } = req.params;
+const getNotificationById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const {userId} = req.params;
   try {
     const notifications = await fetchNotificationsById(Number(userId));
     res.status(200).json(notifications);
@@ -59,8 +81,12 @@ const getNotificationById = async (req: Request, res: Response, next: NextFuncti
   }
 };
 
-const markNotificationAsRead = async (req: Request, res: Response, next: NextFunction) => {
-  const { notiId } = req.params;
+const markNotificationAsRead = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const {notiId} = req.params;
   try {
     await markNotiAsRead(Number(notiId));
     res.status(200).json({message: 'Notification marked as read'});
@@ -70,8 +96,12 @@ const markNotificationAsRead = async (req: Request, res: Response, next: NextFun
   }
 };
 
-const removeNotification = async (req: Request, res: Response, next: NextFunction) => {
-  const { notiId } = req.params;
+const removeNotification = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const {notiId} = req.params;
   try {
     await deleteNotification(Number(notiId));
     res.status(200).json({message: 'Notification removed'});
@@ -81,15 +111,28 @@ const removeNotification = async (req: Request, res: Response, next: NextFunctio
   }
 };
 
-const getUnreadNotifications = async (req: Request, res: Response, next: NextFunction) => {
-  const { userId } = req.params;
+const getUnreadNotifications = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const {userId} = req.params;
   try {
-    await fetchNotificationsById(Number(userId));
-    res.status(200).send('Notification fetched');
+    const notis = await getUnreadNotificationsCount(Number(userId));
+    console.log(notis);
+    res.status(200).json({message: 'count of notis', count: notis});
   } catch (e) {
     console.error(e);
     throw e;
   }
-}
+};
 
-export { createCommentNotification, createFollowNotification, createLikeNotification, getNotificationById, markNotificationAsRead, removeNotification, getUnreadNotifications };
+export {
+  createCommentNotification,
+  createFollowNotification,
+  createLikeNotification,
+  getNotificationById,
+  markNotificationAsRead,
+  removeNotification,
+  getUnreadNotifications,
+};
