@@ -2,6 +2,8 @@ import app from './app';
 import https from 'https';
 import fs from 'fs';
 
+require('dotenv').config();
+
 if (process.env.NODE_ENV === 'production') {
   const sslkey = fs.readFileSync('/etc/pki/tls/private/ca.key');
   const sslcert = fs.readFileSync('/etc/pki/tls/certs/ca.crt');
