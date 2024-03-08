@@ -69,7 +69,7 @@ const makeThumbnail = async (
       next(new CustomError('File not uploaded', 500));
       return;
     }
-
+    console.log(req.file);
     const src = path.join(__dirname, '..', 'uploads', req.file.filename);
     console.log(src);
 
