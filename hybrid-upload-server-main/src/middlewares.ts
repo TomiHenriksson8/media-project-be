@@ -70,7 +70,7 @@ const makeThumbnail = async (
       return;
     }
     console.log(req.file);
-    const src = path.join(__dirname, '..', 'uploads', req.file.filename);
+    const src = path.join(__dirname, 'uploads', req.file.filename);
     console.log(src);
 
     if (!req.file.mimetype.includes('video')) {
