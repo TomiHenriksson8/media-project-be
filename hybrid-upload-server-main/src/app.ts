@@ -21,12 +21,7 @@ app.use(
 app.use(cors());
 app.use(express.json());
 
-app.use('/uploads', (req, res, next) => {
-  console.log('Request URL:', req.originalUrl);
-  console.log('Static path:', path.join(__dirname, 'dist', 'hybrid-upload-server-main', 'src', 'uploads'));
-  next();
-}, express.static(path.join(__dirname, 'dist', 'hybrid-upload-server-main', 'src', 'uploads')));
-
+app.use('/uploads', express.static('/home/tomihenr/hybrid/media-project-be/hybrid-upload-server-main/dist/hybrid-upload-server-main/src/uploads'));
 
 
 app.get<{}, MessageResponse>('/', (req, res) => {
