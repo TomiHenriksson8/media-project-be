@@ -99,8 +99,8 @@ const fetchMediaFromFollowedUsers = async (userId: number): Promise<MediaItem[] 
         CONCAT(?, MediaItems.filename) AS filename,
         CONCAT(?, CONCAT(MediaItems.filename, "-thumb.png")) AS thumbnail
       FROM MediaItems
-      JOIN userfollows ON MediaItems.user_id = userfollows.follower_id
-      WHERE userfollows.following_id = ?
+      JOIN userFollows ON MediaItems.user_id = userFollows.follower_id
+      WHERE userFollows.following_id = ?
       ORDER BY MediaItems.created_at DESC`,
       [uploadPath, uploadPath, userId]
     );
