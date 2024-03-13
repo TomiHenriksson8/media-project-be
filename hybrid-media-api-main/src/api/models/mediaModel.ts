@@ -114,6 +114,29 @@ const fetchMediaFromFollowedUsers = async (userId: number): Promise<MediaItem[] 
   }
 };
 
+const fetchLikedMedia = async (userId: number): Promise<MediaItem[] | null> => {
+  const uploadPath = process.env.UPLOAD_URL;
+  try {
+    const [rows] = await promisePool.execute<RowDataPacket[] & MediaItem[]>(
+      `SELECT MediaItems.*,
+        CONCAT(?, MediaItems.filename) AS filename,
+        CONCAT(?, CONCAT(MediaItems.filename, "-thumb.png")) AS thumbnail
+      FROM MediaItems
+      JOIN likes ON MediaItems.media_id = likes.media_id
+      WHERE likes.user_id = ?
+      ORDER BY MediaItems.created_at DESC`,
+      [uploadPath, uploadPath, userId]
+    );
+    if (rows.length === 0) {
+      return null;
+    }
+    return rows;
+  } catch (e) {
+    console.error('fetchLikedMedia error', (e as Error).message);
+    throw new Error((e as Error).message);
+  }
+};
+
 
 const postMedia = async (
   media: Omit<MediaItem, 'media_id' | 'created_at' | 'thumbnail'>
@@ -339,6 +362,7 @@ export {
   fetchMediaByUserId,
   fetchMediaByTitle,
   fetchMediaFromFollowedUsers,
+  fetchLikedMedia,
   postMedia,
   deleteMedia,
   fetchMostLikedMedia,

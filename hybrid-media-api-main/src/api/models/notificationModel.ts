@@ -45,7 +45,8 @@ const createFolNotification = async (userId: number, notiContent: string, refId:
 const fetchNotificationsById = async (userId: number) => {
   try {
     const [rows] = await promisePool.query(
-      'SELECT * FROM Notifications WHERE user_id = ?',
+      `SELECT * FROM Notifications WHERE user_id = ?
+       ORDER BY created_at DESC`,
       [userId]
     );
     return rows;

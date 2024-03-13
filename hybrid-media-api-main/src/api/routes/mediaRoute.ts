@@ -11,6 +11,7 @@ import {
   mediaGetByUserId,
   mediaGetByTitle,
   mediaGetByFollowedUsers,
+  getLikedMediaByUserId,
 } from '../controllers/mediaController';
 import {authenticate, validationErrors} from '../../middlewares';
 import {body} from 'express-validator';
@@ -36,6 +37,8 @@ router.route('/user/:userId').get(mediaGetByUserId);
 router.route('/title/:title').get(mediaGetByTitle);
 
 router.route('/followed/:userId').get(mediaGetByFollowedUsers);
+
+router.route('/user/liked/:userId').get(getLikedMediaByUserId);
 
 router.route('/mostliked').get(mediaListMostLikedGet);
 

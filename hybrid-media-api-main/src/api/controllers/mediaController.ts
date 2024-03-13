@@ -11,6 +11,7 @@ import {
   fetchMediaByUserId,
   fetchMediaByTitle,
   fetchMediaFromFollowedUsers,
+  fetchLikedMedia,
 } from '../models/mediaModel';
 import CustomError from '../../classes/CustomError';
 import {MediaResponse, MessageResponse} from '@sharedTypes/MessageTypes';
@@ -85,6 +86,20 @@ const mediaGetByTitle = async (req: Request, res: Response, next: NextFunction) 
 const mediaGetByFollowedUsers = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const media = await fetchMediaFromFollowedUsers(Number(req.params.userId));
+    if (media) {
+      res.json(media);
+      return;
+    }
+    const error = new CustomError('No media found', 404);
+    next(error);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getLikedMediaByUserId = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const media = await fetchLikedMedia(Number(req.params.userId));
     if (media) {
       res.json(media);
       return;
@@ -225,6 +240,7 @@ export {
   mediaGetByUserId,
   mediaGetByTitle,
   mediaGetByFollowedUsers,
+  getLikedMediaByUserId,
   mediaPost,
   mediaPut,
   mediaDelete,
