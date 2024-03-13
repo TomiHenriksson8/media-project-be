@@ -4,7 +4,6 @@ import mediaRoute from './routes/mediaRoute';
 import tagRoute from './routes/tagRoute';
 import likeRoute from './routes/likeRoute';
 import commentRoute from './routes/commentRoute';
-import ratingRoute from './routes/ratingRoute';
 import followRoute from './routes/followRoute';
 import notificationRoute from './routes/notificationRoute';
 import searchRoute from './routes/searchRoute';
@@ -24,7 +23,6 @@ router.use('/search', searchRoute);
 router.use('/tags', tagRoute);
 router.use('/likes', likeRoute);
 router.use('/comments', commentRoute);
-router.use('/ratings', ratingRoute);
 
 
 export default router;
