@@ -122,8 +122,8 @@ const fetchLikedMedia = async (userId: number): Promise<MediaItem[] | null> => {
         CONCAT(?, MediaItems.filename) AS filename,
         CONCAT(?, CONCAT(MediaItems.filename, "-thumb.png")) AS thumbnail
       FROM MediaItems
-      JOIN likes ON MediaItems.media_id = likes.media_id
-      WHERE likes.user_id = ?
+      JOIN Likes ON MediaItems.media_id = Likes.media_id
+      WHERE Likes.user_id = ?
       ORDER BY MediaItems.created_at DESC`,
       [uploadPath, uploadPath, userId]
     );
