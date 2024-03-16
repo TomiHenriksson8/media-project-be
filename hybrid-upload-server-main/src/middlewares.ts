@@ -66,26 +66,35 @@ const makeThumbnail = async (
 ) => {
   try {
     if (!req.file) {
+      console.log('No file found in the request');
       next(new CustomError('File not uploaded', 500));
       return;
     }
-    console.log(req.file);
+    console.log('Uploaded file details:', req.file);
+
     const src = path.join(__dirname, 'uploads', req.file.filename);
-    console.log(src);
+    console.log('Full path to the uploaded file:', src);
 
     if (!req.file.mimetype.includes('video')) {
+      console.log('Processing as an image, not a video');
       const image = await jimp.read(src);
       image.resize(320, jimp.AUTO);
-      await image.writeAsync(src + '-thumb.png');
+      const thumbPath = src + '-thumb.png';
+      await image.writeAsync(thumbPath);
+      console.log('Image thumbnail created at:', thumbPath);
       next();
       return;
     }
 
+    console.log('Processing as a video');
     await getVideoThumbnail(src);
+    console.log('Video thumbnail should have been created');
     next();
   } catch (error) {
+    console.error('Error during thumbnail generation:', error);
     next(new CustomError('Thumbnail not created', 500));
   }
 };
+
 
 export {notFound, errorHandler, authenticate, makeThumbnail};
