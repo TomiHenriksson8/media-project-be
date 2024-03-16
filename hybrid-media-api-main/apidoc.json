@@ -9,5 +9,5 @@
     "withGenerator": true
   },
   "exclude": ["node_modules/", "public/"],
-  "files": ["src/**/*.ts"]
+  "files": ["src/**/**/*.ts"]
 }
