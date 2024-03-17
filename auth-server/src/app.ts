@@ -15,6 +15,7 @@ app.use(
     directives: {
       defaultSrc: ["'self'"],
       scriptSrc: ["'self'", "'unsafe-eval'"],
+      imgSrc: ["'self'", "http:"],
     },
   })
 );
